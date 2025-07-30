@@ -77,12 +77,6 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// 터치 조작 (모바일)
-document.addEventListener("touchmove", function (e) {
-  const touchX = e.touches[0].clientX;
-  catcher.x = touchX - catcher.width / 2;
-});
-
 // 마우스 조작 (PC)
 // 터치 조작 (모바일) + 스크롤 방지
 document.addEventListener("touchmove", function (e) {
