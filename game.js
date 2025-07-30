@@ -84,10 +84,13 @@ document.addEventListener("touchmove", function (e) {
 });
 
 // 마우스 조작 (PC)
-document.addEventListener("mousemove", function (e) {
-  const mouseX = e.clientX;
-  catcher.x = mouseX - catcher.width / 2;
-});
+// 터치 조작 (모바일) + 스크롤 방지
+document.addEventListener("touchmove", function (e) {
+  e.preventDefault(); // Safari 화면 흔들림 방지
+  const touchX = e.touches[0].clientX;
+  catcher.x = touchX - catcher.width / 2;
+}, { passive: false });
+
 
 // 하트 생성 주기
 setInterval(createHeart, 1000);
