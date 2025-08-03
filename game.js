@@ -6,8 +6,15 @@ canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
 // 바구니 이미지 로드
+// 이미지 로드
 const basketImg = new Image();
-basketImg.src = "heart.jpeg"; // 꼭 같은 폴더에 있어야 함
+basketImg.src = "heart.jpeg"; // 바구니 이미지
+
+const heartImg = new Image();
+heartImg.src = "jj.jpeg";   // 하트 이미지
+
+const bombImg = new Image();
+bombImg.src = "uu.jpeg";     // 폭탄 이미지
 
 // 바구니 설정
 const catcher = {
@@ -38,12 +45,11 @@ function drawCatcher() {
 // 하트/폭탄 그리기
 function drawObjects() {
   objects.forEach((obj) => {
-    ctx.fillStyle = obj.type === "heart" ? "red" : "black";
-    ctx.beginPath();
-    ctx.arc(obj.x + objectSize / 2, obj.y + objectSize / 2, objectSize / 2, 0, Math.PI * 2);
-    ctx.fill();
+    const img = obj.type === "heart" ? heartImg : bombImg;
+    ctx.drawImage(img, obj.x, obj.y, objectSize, objectSize);
   });
 }
+
 
 // 오브젝트 움직이고 충돌 확인
 function moveObjects() {
