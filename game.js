@@ -5,9 +5,9 @@ const ctx = canvas.getContext("2d");
 canvas.width = window.innerWidth;
 canvas.height = window.innerHeight;
 
-// 이미지 로드
+// 바구니 이미지 로드
 const basketImg = new Image();
-basketImg.src = "heart.jpeg"; // 바구니 이미지
+basketImg.src = "heart.jpeg"; // 꼭 같은 폴더에 있어야 함
 
 // 바구니 설정
 const catcher = {
@@ -17,7 +17,7 @@ const catcher = {
   y: canvas.height - 150
 };
 
-// 하트 + 폭탄 공통 설정
+// 떨어지는 오브젝트들 (하트 + 폭탄)
 const objects = [];
 const objectSize = 30;
 let score = 0;
@@ -35,21 +35,17 @@ function drawCatcher() {
   ctx.drawImage(basketImg, catcher.x, catcher.y, catcher.width, catcher.height);
 }
 
-// 하트와 폭탄 그리기
+// 하트/폭탄 그리기
 function drawObjects() {
   objects.forEach((obj) => {
-    if (obj.type === "heart") {
-      ctx.fillStyle = "red";
-    } else {
-      ctx.fillStyle = "black"; // 폭탄은 검은색
-    }
+    ctx.fillStyle = obj.type === "heart" ? "red" : "black";
     ctx.beginPath();
     ctx.arc(obj.x + objectSize / 2, obj.y + objectSize / 2, objectSize / 2, 0, Math.PI * 2);
     ctx.fill();
   });
 }
 
-// 하트, 폭탄 움직이기 + 충돌 처리
+// 오브젝트 움직이고 충돌 확인
 function moveObjects() {
   for (let i = objects.length - 1; i >= 0; i--) {
     const obj = objects[i];
@@ -61,33 +57,28 @@ function moveObjects() {
       obj.x <= catcher.x + catcher.width;
 
     if (caught) {
-      if (obj.type === "heart") {
-        score++;
-      } else if (obj.type === "bomb") {
-        score -= 5;
-      }
-      objects.splice(i, 1); // 제거
+      if (obj.type === "heart") score++;
+      else if (obj.type === "bomb") score -= 5;
+      objects.splice(i, 1);
       continue;
     }
 
-    // 화면 아래로 떨어짐
+    // 바닥까지 떨어짐
     if (obj.y > canvas.height) {
-      if (obj.type === "heart") {
-        score--;
-      }
+      if (obj.type === "heart") score--;
       objects.splice(i, 1);
     }
   }
 }
 
-// 점수 출력
+// 점수 표시
 function drawScore() {
   ctx.fillStyle = "black";
   ctx.font = "20px Arial";
   ctx.fillText("Score: " + score, 10, 30);
 }
 
-// 메인 게임 루프
+// 메인 루프
 function gameLoop() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   drawCatcher();
@@ -97,22 +88,21 @@ function gameLoop() {
   requestAnimationFrame(gameLoop);
 }
 
-// 터치 조작
-document.addEventListener("touchmove", function (e) {
-  const touchX = e.touches[0].clientX;
-  catcher.x = touchX - catcher.width / 2;
+// 마우스 조작 (PC)
+canvas.addEventListener("mousemove", function (e) {
+  catcher.x = e.clientX - catcher.width / 2;
 });
 
-// 마우스 조작
-document.addEventListener("mousemove", function (e) {
-  const mouseX = e.clientX;
-  catcher.x = mouseX - catcher.width / 2;
-});
+// 터치 조작 (모바일)
+canvas.addEventListener("touchmove", function (e) {
+  catcher.x = e.touches[0].clientX - catcher.width / 2;
+  e.preventDefault();
+}, { passive: false });
 
-// 생성 주기
+// 오브젝트 생성 주기
 setInterval(createObject, 1000);
 
-// 이미지가 로드되면 게임 시작
+// 이미지 로드 완료 후 시작
 basketImg.onload = () => {
   gameLoop();
 };
