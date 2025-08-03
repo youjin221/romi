@@ -109,6 +109,15 @@ canvas.addEventListener("touchmove", function (e) {
 setInterval(createObject, 1000);
 
 // 이미지 로드 완료 후 시작
-basketImg.onload = () => {
-  gameLoop();
-};
+let imagesLoaded = 0;
+function onImageLoad() {
+  imagesLoaded++;
+  if (imagesLoaded === 3) {
+    gameLoop();
+  }
+}
+
+basketImg.onload = onImageLoad;
+heartImg.onload = onImageLoad;
+bombImg.onload = onImageLoad;
+
